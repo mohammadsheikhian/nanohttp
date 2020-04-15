@@ -139,7 +139,7 @@ def jsonify(func):
         ):
             raise ValueError('Cannot encode to json: %s' % type(result))
 
-        return ujson.dumps(result, indent=4)
+        return ujson.dumps(result, indent=4, escape_forward_slashes=False)
 
     return wrapper
 
