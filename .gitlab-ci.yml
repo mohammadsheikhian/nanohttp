@@ -1,0 +1,38 @@
+before_script:
+    - service postgresql start && service redis-server start
+    - virtualenv nanohttp-ve
+    - source nanohttp-ve/bin/activate
+    - pip install -e . -r requirements-ci.txt
+
+stages:
+    - test coverage
+    - wiki
+
+test and coverage:
+    stage: test coverage
+    script:
+        - pytest --cov=nanohttp
+    artifacts:
+        name: $CI_PROJECT_TITLE-$CI_COMMIT_REF_SLUG
+        paths:
+            - data/markdown
+        when: on_success
+        expire_in: 2h
+
+update wiki:
+    before_script: []
+    stage: wiki
+    only:
+        - master
+        - develop
+        - tags
+    dependencies:
+        - test and coverage
+    script:
+        - PROJECT=$CI_PROJECT_TITLE
+        - REF=$CI_COMMIT_REF_NAME
+        - TARGET_DIR="/var/www/html/wiki/$PROJECT/$REF"
+        - TARGET="wiki@192.168.1.60"
+        - ssh -oStrictHostKeyChecking=no $TARGET "rm -rf $TARGET_DIR && mkdir -p $TARGET_DIR"
+        - scp -r data/markdown/*.md "$TARGET:$TARGET_DIR"
+
