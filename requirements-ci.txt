@@ -1,3 +1,5 @@
+PyYAML < 6
+pyparsing <= 2.4.7
 bddrest >= 2.4.3, < 3
 coverage
 coveralls
