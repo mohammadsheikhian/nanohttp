@@ -7,12 +7,24 @@ from .configuration import settings
 
 class HTTPStatus(Exception):
     status = None
+    custom_status_code = None
 
     def __init__(self, status=None):
         if status is not None:
             self.status = status
 
+            if isinstance(status, str):
+                code, text = self.status.split(' ', 1)
+                self.custom_status_code = code
+
+                if len(code) > 3:
+                    self.status = f'400 {text}'
+
         super().__init__(self.status)
+
+    def status_format(self):
+        code, text = self.status.split(' ', 1)
+        return code, text
 
     def render(self):
         stack_trace = traceback.format_exc()
