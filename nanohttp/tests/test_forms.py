@@ -87,7 +87,8 @@ def test_json_form():
         # No content length
         when(body='', content_type='application/json')
         assert status == 400
-        assert response.text == 'Content-Length required'
+        assert response.text == '{"statusCode":"400","message":' \
+            '"Content-Length required","stackTrace":"Content-Length required"}'
 
         when(
             body='malformed',
@@ -95,7 +96,8 @@ def test_json_form():
             headers={'Content-Length': '9'}
         )
         assert status == 400
-        assert response.text == 'Cannot parse the request'
+        assert response.text == '{"statusCode":"400","message":"Cannot parse' \
+            ' the request","stackTrace":"Cannot parse the request"}'
 
 
 def test_invalid_form():

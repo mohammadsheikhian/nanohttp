@@ -1,9 +1,10 @@
-
 import sys
 import types
 import logging
 import traceback
 from collections import Iterable
+
+import ujson
 
 from nanohttp.contexts import Context, context
 from nanohttp.exceptions import HTTPStatus
@@ -49,10 +50,20 @@ class Application:
     def _handle_exception(self, ex, start_response):
 
         response_headers = [("content-type", "text/plain")]
+        response_body = dict()
+
         if isinstance(ex, HTTPStatus):
-            exc_info=None
+            exc_info = None
             status = ex.status
-            response_body = ex.render()
+            code, text = ex.status_format()
+            if hasattr(ex, 'custom_status_code'):
+                code = ex.custom_status_code
+
+            response_body = dict(
+                statusCode=code,
+                message=text,
+                stackTrace=ex.render()
+            )
             if ex.headers:
                 response_headers = ex.headers
         else:
@@ -60,13 +71,17 @@ class Application:
                 'Internal Server Error',
                 exc_info=True
             )
-            exc_info=sys.exc_info()
+            exc_info = sys.exc_info()
             status = '500 Internal Server Error'
+            response_body = dict(
+                statusCode=500,
+                message='Internal Server Error',
+                stackTrace=None,
+            )
             if settings.debug:
-                response_body = traceback.format_exc()
-            else:
-                response_body = status
+                response_body['stackTrace'] = traceback.format_exc()
 
+        response_body = ujson.dumps(response_body)
         start_response(
             status,
             response_headers,
