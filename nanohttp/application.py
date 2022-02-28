@@ -66,6 +66,10 @@ class Application:
             )
             if ex.headers:
                 response_headers = ex.headers
+
+            if code == 500:
+                self.__logger__.info(ex.render())
+
         else:
             self.__logger__.exception(
                 'Internal Server Error',
@@ -80,6 +84,8 @@ class Application:
             )
             if settings.debug:
                 response_body['stackTrace'] = traceback.format_exc()
+
+            self.__logger__.info(traceback.format_exc())
 
         response_body = ujson.dumps(response_body)
         start_response(
