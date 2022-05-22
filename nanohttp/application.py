@@ -68,13 +68,9 @@ class Application:
                 response_headers = ex.headers
 
             if code == 500:
-                self.__logger__.info(ex.render())
+                self.__logger__.error(ex.render())
 
         else:
-            self.__logger__.exception(
-                'Internal Server Error',
-                exc_info=True
-            )
             exc_info = sys.exc_info()
             status = '500 Internal Server Error'
             response_body = dict(
@@ -85,7 +81,8 @@ class Application:
             if settings.debug:
                 response_body['stackTrace'] = traceback.format_exc()
 
-            self.__logger__.info(traceback.format_exc())
+            self.__logger__.error(ex.__doc__)
+            self.__logger__.error(traceback.format_exc())
 
         response_body = ujson.dumps(response_body)
         start_response(
