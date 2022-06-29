@@ -50,8 +50,7 @@ class Application:
     def _handle_exception(self, ex, start_response):
 
         response_headers = [("content-type", "text/plain")]
-        response_body = dict()
-
+        stack_trace = traceback.format_exc()
         if isinstance(ex, HTTPStatus):
             exc_info = None
             status = ex.status
@@ -62,13 +61,10 @@ class Application:
             response_body = dict(
                 statusCode=code,
                 message=text,
-                stackTrace=ex.render()
+                stackTrace=None
             )
             if ex.headers:
                 response_headers = ex.headers
-
-            if code == 500:
-                self.__logger__.error(ex.render())
 
         else:
             exc_info = sys.exc_info()
@@ -78,11 +74,24 @@ class Application:
                 message='Internal Server Error',
                 stackTrace=None,
             )
-            if settings.debug:
-                response_body['stackTrace'] = traceback.format_exc()
 
-            self.__logger__.error(ex.__doc__)
-            self.__logger__.error(traceback.format_exc())
+        if settings.debug:
+            response_body['stackTrace'] = stack_trace
+
+        if response_body['statusCode'] in ['400', '500', 400, 500]:
+            extra_information = None
+            if hasattr(ex, 'extra_information'):
+                extra_information = ex.extra_information
+
+            _log_response_body = dict(
+                statusCode=response_body['statusCode'],
+                message=f"{response_body['message']}: {extra_information}",
+                stackTrace=stack_trace,
+            )
+            self.__logger__.error(ujson.dumps(
+                _log_response_body,
+                escape_forward_slashes=True,
+            ))
 
         response_body = ujson.dumps(response_body)
         start_response(

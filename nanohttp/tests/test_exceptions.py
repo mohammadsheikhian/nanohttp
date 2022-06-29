@@ -29,7 +29,7 @@ def test_http_status_no_debug_mode():
         assert status == '603 Bad Happened'
         assert 'traceback' not in response.text.casefold()
         assert response.text == '{"statusCode":"603",' \
-            '"message":"Bad Happened","stackTrace":"Bad Happened"}'
+            '"message":"Bad Happened","stackTrace":null}'
 
 
 def test_http_status_debug_mode_json_content_type():
@@ -53,7 +53,7 @@ def test_http_status_no_debug_mode_json_content_type():
         assert status == '603 Bad Happened'
         assert response.json == {
             'message': 'Bad Happened',
-            'stackTrace': '{}',
+            'stackTrace': None,
             'statusCode': '603',
         }
 
@@ -67,7 +67,7 @@ def test_http_bad_request():
     with Given(Root(), configuration='debug: false'):
         assert status == '400 My Bad'
         assert response.text == \
-            '{"statusCode":"400","message":"My Bad","stackTrace":"My Bad"}'
+            '{"statusCode":"400","message":"My Bad","stackTrace":null}'
 
 
 def test_http_not_modified():
@@ -90,7 +90,7 @@ def test_http_redirect():
         assert status == '301 Moved Permanently'
         assert response.headers['Location'] == 'http://example.com'
         assert response.text == '{"statusCode":"301",' \
-            '"message":"Moved Permanently","stackTrace":"Moved Permanently"}'
+            '"message":"Moved Permanently","stackTrace":null}'
 
 
 def test_unhandled_exceptions_debug_mode():
