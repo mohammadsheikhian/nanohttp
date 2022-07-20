@@ -2,7 +2,7 @@ import sys
 import types
 import logging
 import traceback
-from collections import Iterable
+from collections.abc import Iterable
 
 import ujson
 
