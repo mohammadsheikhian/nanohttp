@@ -1,6 +1,5 @@
 import functools
 from inspect import signature, Parameter
-from typing import Union
 
 import ujson
 
@@ -139,7 +138,12 @@ def jsonify(func):
         ):
             raise ValueError('Cannot encode to json: %s' % type(result))
 
-        return ujson.dumps(result, indent=4, escape_forward_slashes=False)
+        return ujson.dumps(
+            result,
+            indent=4,
+            escape_forward_slashes=False,
+            reject_bytes=False,
+        )
 
     return wrapper
 

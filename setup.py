@@ -15,7 +15,7 @@ with open(
 
 dependencies = [
     'pymlconf >= 2, <3',
-    'ujson < 2',
+    'ujson',  # The last version at this commit is 5.4.0
 ]
 
 

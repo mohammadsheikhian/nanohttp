@@ -2,7 +2,7 @@ import sys
 import types
 import logging
 import traceback
-from collections import Iterable
+from collections.abc import Iterable
 
 import ujson
 
@@ -91,9 +91,10 @@ class Application:
             self.__logger__.error(ujson.dumps(
                 _log_response_body,
                 escape_forward_slashes=True,
+                reject_bytes=False,
             ))
 
-        response_body = ujson.dumps(response_body)
+        response_body = ujson.dumps(response_body, reject_bytes=False)
         start_response(
             status,
             response_headers,

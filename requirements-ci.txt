@@ -3,6 +3,7 @@ pyparsing <= 2.4.7
 bddrest >= 2.4.3, < 3
 coverage
 coveralls
-pytest >= 4.4.0
+pytest  # the last version at this commit is 7.1.2
+
 pytest-cov
 pytest-xdist
