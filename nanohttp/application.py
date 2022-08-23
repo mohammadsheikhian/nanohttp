@@ -94,6 +94,9 @@ class Application:
                 reject_bytes=False,
             ))
 
+        if hasattr(context, 'identity') and context.identity:
+            response_headers.append(('X-Identity', str(context.identity.id)))
+
         response_body = ujson.dumps(response_body, reject_bytes=False)
         start_response(
             status,
