@@ -125,7 +125,7 @@ def chunked(trailer_field=None, trailer_value=None):
     return decorator
 
 
-def jsonify(func):
+def jsonify(func, is_beautify=True):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -138,9 +138,13 @@ def jsonify(func):
         ):
             raise ValueError('Cannot encode to json: %s' % type(result))
 
+        indent = 4
+        if is_beautify is False:
+            indent = 0
+
         return ujson.dumps(
             result,
-            indent=4,
+            indent=indent,
             escape_forward_slashes=False,
             reject_bytes=False,
         )

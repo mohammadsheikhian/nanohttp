@@ -141,7 +141,7 @@ def test_html_decorator():
 
 def test_json_decorator():
     class Root(Controller):
-        @json
+        @json(is_beautify=False)
         def index(self, a, b):
             return dict(a=a, b=b)
 
@@ -168,12 +168,14 @@ def test_json_decorator():
 
     with Given(Root(), '/1/2'):
         assert status == 200
+        assert response.text == '{"a":"1","b":"2"}'
         assert response.json == dict(a='1', b='2')
         assert response.content_type == 'application/json'
         assert response.encoding == 'utf-8'
 
         when('/custom')
         assert status == 200
+        assert response.text == '{\n    "c": 1\n}'
         assert response.json == dict(c=1)
 
         with pytest.raises(ValueError):
