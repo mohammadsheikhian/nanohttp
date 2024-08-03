@@ -29,6 +29,15 @@ class Field:
         if not_none:
             self.criteria.append(NotNoneValidator(not_none))
 
+        if pattern:
+            self.criteria.append(PatternValidator(pattern))
+
+        if min_length:
+            self.criteria.append(MinLengthValidator(min_length))
+
+        if max_length:
+            self.criteria.append(MaxLengthValidator(max_length))
+
         if type_:
             self.criteria.append(TypeValidator(type_))
 
@@ -37,15 +46,6 @@ class Field:
 
         if maximum:
             self.criteria.append(MaximumValidator(maximum))
-
-        if min_length:
-            self.criteria.append(MinLengthValidator(min_length))
-
-        if max_length:
-            self.criteria.append(MaxLengthValidator(max_length))
-
-        if pattern:
-            self.criteria.append(PatternValidator(pattern))
 
         if callback:
             self.criteria.append(CallableValidator(callback))

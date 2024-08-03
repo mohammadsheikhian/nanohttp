@@ -216,22 +216,22 @@ def test_validation_custom_status():
         fields=dict(
             a=dict(
                 type_=(int, '999 Type error'),
-                minimum=(3, '666'),
-                maximum=(4, '667 greater than maximum'),
+                min_length=(3, '666'),
+                max_length=(4, '667 greater than maximum'),
             )
         )
     )
 
     with pytest.raises(HTTPStatus) as ctx:
-        validator(dict(a='NotInteger'))
+        validator(dict(a='aa2'))
     assert str(ctx.value) == '999 Type error'
 
     with pytest.raises(HTTPStatus) as ctx:
-        validator(dict(a=2))
+        validator(dict(a='2'))
     assert str(ctx.value) == '666 Bad request'
 
     with pytest.raises(HTTPStatus) as ctx:
-        validator(dict(a=5))
+        validator(dict(a='12345'))
     assert str(ctx.value) == '667 greater than maximum'
 
 
