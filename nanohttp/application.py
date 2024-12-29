@@ -61,7 +61,8 @@ class Application:
             response_body = dict(
                 statusCode=code,
                 message=text,
-                stackTrace=None
+                stackTrace=None,
+                messageFa=ex.message_fa,
             )
             if ex.headers:
                 response_headers = ex.headers
@@ -73,6 +74,7 @@ class Application:
                 statusCode=500,
                 message='Internal Server Error',
                 stackTrace=None,
+                messageFa='خطای داخلی سرور',
             )
 
         if settings.debug:

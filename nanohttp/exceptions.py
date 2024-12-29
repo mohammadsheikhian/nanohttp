@@ -8,6 +8,7 @@ from .configuration import settings
 class HTTPStatus(Exception):
     status = None
     custom_status_code = None
+    message_fa = None
 
     def __init__(self, status=None):
         if status is not None:
